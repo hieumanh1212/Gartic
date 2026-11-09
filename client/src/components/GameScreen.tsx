@@ -77,7 +77,7 @@ export function GameScreen({ code, create, profile, onLeave }: Props) {
   };
 
   return (
-    <div className="game">
+    <div className={`game${canDraw ? ' drawer' : ''}`}>
       <header className="topbar">
         <button className="logo" onClick={() => confirm('Rời khỏi phòng?') && onLeave()} title="Rời phòng">🎨 <span>Vẽ Đoán</span></button>
         <div className="round">

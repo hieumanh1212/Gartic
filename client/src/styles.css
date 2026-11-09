@@ -322,41 +322,169 @@ canvas.tool-fill { cursor: cell; }
 .chat-input input { flex: 1; min-width: 0; }
 .chat-input button { border: none; background: var(--primary); color: #fff; border-radius: 10px; width: 44px; font-size: 1.05rem; }
 
+.overlay .btn:not(.primary) { color: var(--ink); }
+
+/* Cảm ứng: không zoom khi chạm đúp, không kéo-để-tải-lại khi đang vẽ */
+button, .swatch, .chat-input { touch-action: manipulation; }
+body { overscroll-behavior: none; }
+.board-canvas canvas { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
 /* ───────── Màn hình nhỏ ───────── */
 @media (max-width: 1100px) {
   .game { grid-template-columns: 190px minmax(0, 1fr) 260px; }
 }
 
+/* ── Điện thoại dọc ── */
 @media (max-width: 860px) {
+  /* Chiều cao dành cho mọi thứ ngoài bảng vẽ (thanh trên, người chơi, chat tối thiểu, khoảng cách) */
+  .game { --reserve: 250px; }
+  .game.drawer { --reserve: 345px; }
+
   .game {
     height: 100dvh;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto auto minmax(160px, 1fr);
+    grid-template-rows: auto auto auto auto minmax(110px, 1fr);
     grid-template-areas: 'top' 'net' 'stage' 'players' 'chat';
     gap: 6px;
-    padding: 6px;
+    padding: 6px max(6px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
   }
-  .topbar { grid-template-columns: auto 1fr auto auto; gap: 0.5rem; padding: 0.4rem 0.6rem; min-height: 48px; }
-  .logo span, .round { display: none; }
-  .headline { font-size: 0.95rem; }
-  .hint { gap: 0.5rem; }
-  .hint-char { width: 0.95em; font-size: 1.05rem; }
-  .timer { font-size: 1.1rem; }
-  .stage { overflow: visible; }
-  .board { max-width: 100%; min-width: 0; gap: 6px; }
-  .toolbar { gap: 6px; padding: 6px; }
-  .tools button, .sizes button { width: 34px; height: 34px; }
-  .swatch { width: 24px; height: 24px; }
-  .side-players { overflow-x: auto; overflow-y: hidden; }
-  .players { flex-direction: row; padding: 4px; }
-  .player { flex-direction: column; gap: 0; padding: 0.3rem 0.5rem; min-width: 76px; text-align: center; position: relative; }
-  .player .rank { position: absolute; top: 2px; left: 4px; }
-  .player .avatar { font-size: 1.3rem; }
-  .player .info { align-items: center; }
-  .player .name { font-size: 0.8rem; max-width: 80px; }
-  .player .badges { position: absolute; top: 0; right: 2px; font-size: 0.75rem; }
-  .settings { grid-template-columns: 1fr; }
+
+  /* Thanh trên */
+  .topbar { grid-template-columns: auto auto 1fr auto auto; gap: 0.4rem; padding: 0.3rem 0.5rem; min-height: 44px; border-radius: 12px; }
+  .logo { font-size: 1.1rem; }
+  .logo span { display: none; }
+  .round { font-size: 0.75rem; background: var(--primary-soft); color: var(--primary); padding: 2px 6px; border-radius: 999px; }
+  .headline { font-size: 0.9rem; }
+  .headline .word b { font-size: 1.05rem; }
+  .hint { gap: 0.45rem; }
+  .hint-word { gap: 2px; }
+  .hint-char { width: 0.8em; height: 1.3em; font-size: 1rem; border-bottom-width: 2px; }
+  .hint-word sup { font-size: 0.6rem; }
+  .timer { font-size: 1.05rem; min-width: 3ch; }
+  .icon-btn { font-size: 1.1rem; padding: 0; }
+  .net-banner { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
+
+  /* Bảng vẽ: co theo chiều cao màn hình để chat luôn còn chỗ (kể cả khi bàn phím bật lên) */
+  .stage { overflow: visible; min-height: auto; }
+  .board {
+    max-width: min(100%, calc((100dvh - var(--reserve)) * 4 / 3));
+    min-width: 0;
+    gap: 6px;
+  }
+  .board-canvas { border-radius: 12px; }
+
+  /* Thanh công cụ: hàng 1 = dụng cụ + cỡ nét, hàng 2 = màu (vuốt ngang) */
+  .toolbar { gap: 6px; padding: 6px; justify-content: space-between; border-radius: 12px; }
+  .tools, .sizes { flex-wrap: nowrap; gap: 4px; }
+  .tools button, .sizes button { width: 34px; height: 34px; font-size: 1rem; }
+  .tools .sep { height: 22px; margin: 0 1px; }
+  .size-preview { display: none; }
+  .colors {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 3px 2px;
+    scrollbar-width: none;
+  }
+  .colors::-webkit-scrollbar { display: none; }
+  .swatch { width: 28px; height: 28px; flex: 0 0 auto; }
+
+  /* Người chơi: dải chip vuốt ngang */
+  .side-players { overflow-x: auto; overflow-y: hidden; border-radius: 12px; scrollbar-width: none; }
+  .side-players::-webkit-scrollbar { display: none; }
+  .players { flex-direction: row; padding: 4px; gap: 4px; }
+  .player { flex: 0 0 auto; gap: 0.35rem; padding: 0.25rem 0.55rem 0.25rem 0.4rem; border-radius: 999px; background: #f7f6fc; }
+  .player.me { background: var(--primary-soft); }
+  .player.guessed { background: var(--good-soft); }
+  .player.drawing { outline-width: 2px; outline-offset: -2px; }
+  .player .rank { display: none; }
+  .player .avatar { font-size: 1.25rem; }
+  .player .name { font-size: 0.8rem; max-width: 84px; }
+  .player .name small { display: none; }
+  .player .score { font-size: 0.7rem; }
+  .player .badges { font-size: 0.75rem; }
+
+  /* Chat */
+  .side-chat { border-radius: 12px; }
+  .chat-list { padding: 0.35rem 0.45rem; }
+  .msg { padding: 0.15rem 0.4rem; font-size: 0.9rem; }
+  .chat-input { padding: 6px; }
+  .chat-input input { font-size: 16px; padding: 0.5rem 0.7rem; } /* 16px: iPhone không tự phóng to khi gõ */
+  .chat-input button { width: 42px; }
+
+  /* Lớp phủ gọn hơn trên bảng vẽ nhỏ */
+  .overlay { gap: 0.45rem; padding: 0.6rem; }
+  .overlay h2 { font-size: 1.1rem; }
+  .overlay .muted { font-size: 0.85rem; }
+  .big-avatar { font-size: 2rem; }
+  .choices { gap: 0.4rem; }
+  .choices .btn { font-size: 0.95rem; padding: 0.5rem 0.8rem; }
+  .gains { font-size: 0.85rem; }
+  .gains li { padding: 0.1rem 0.4rem; }
+  .podium { gap: 0.4rem; }
+  .podium .step { min-width: 76px; padding: 0.35rem 0.5rem; font-size: 0.85rem; }
+  .podium .step-1 { padding-top: 0.8rem; }
+  .podium .big-avatar { font-size: 1.6rem; }
+  .rest { font-size: 0.85rem; }
+
+  /* Phòng chờ: cho phép cuộn cả trang */
+  .settings { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .settings select { padding: 0.45rem 0.5rem; font-size: 16px; }
+  .settings textarea { font-size: 16px; }
+  .lobby > div { padding: 0.8rem 0.9rem; }
   .invite .code { font-size: 1.6rem; }
-  .game:has(.lobby) { height: auto; min-height: 100dvh; grid-template-rows: auto auto auto auto 300px; }
+  .invite-actions .btn { padding: 0.5rem 0.75rem; }
+  .game:has(.lobby) { height: auto; min-height: 100dvh; grid-template-rows: auto auto auto auto 260px; }
+
+  .card { padding: 1.25rem; }
+  .title { font-size: 2rem; }
+  .avatar-picker button { font-size: 1.35rem; }
+  .name-input, .join-row input { font-size: 16px; }
 }
-.overlay .btn:not(.primary) { color: var(--ink); }
+
+@media (max-width: 420px) {
+  .toolbar { padding: 6px 5px; }
+  .tools, .sizes { gap: 3px; }
+  .tools button, .sizes button { width: 32px; height: 32px; }
+  .sizes .dot { max-width: 22px; max-height: 22px; }
+}
+@media (max-width: 380px) {
+  .tools, .sizes { gap: 2px; }
+  .tools button, .sizes button { width: 30px; height: 30px; font-size: 0.95rem; }
+  .tools .sep { margin: 0; }
+  .settings { grid-template-columns: 1fr; }
+}
+
+/* ── Điện thoại xoay ngang: bảng vẽ + công cụ bên trái, người chơi + chat bên phải ── */
+@media (orientation: landscape) and (max-height: 520px) {
+  .game, .game.drawer {
+    height: 100dvh;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 30%);
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    grid-template-areas: 'top top' 'net net' 'stage players' 'stage chat';
+  }
+  .stage { min-height: 0; overflow: hidden; container-type: inline-size; }
+  .board { flex-direction: row; width: auto; max-width: 100%; align-items: stretch; }
+  /* Bảng vẽ lấy chiều cao còn lại, nhưng không rộng quá khung */
+  .board-canvas { flex: 0 0 auto; height: min(calc(100dvh - 66px), calc(100cqw * 0.75)); aspect-ratio: 4 / 3; }
+  .game.drawer .board-canvas { height: min(calc(100dvh - 66px), calc((100cqw - 124px) * 0.75)); }
+
+  /* Thanh công cụ thành cột dọc bên phải bảng vẽ */
+  .toolbar {
+    width: 118px; flex: 0 0 118px;
+    flex-direction: column; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch;
+    overflow-y: auto; padding: 6px; gap: 6px;
+  }
+  .tools, .sizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; justify-items: center; }
+  .tools .sep { display: none; }
+  .tools button, .sizes button { width: 32px; height: 32px; }
+  .sizes .dot { max-width: 22px; max-height: 22px; }
+  .colors { order: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; overflow: visible; padding: 0; justify-items: center; flex-basis: auto; }
+  .swatch { width: 23px; height: 23px; }
+
+  .game:has(.lobby) { height: auto; min-height: 100dvh; grid-template-rows: auto auto auto 260px; }
+  .game:has(.lobby) .stage { overflow: visible; }
+}
