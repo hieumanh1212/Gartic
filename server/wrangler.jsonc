@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "ve-doan-server",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-01",
+  "durable_objects": {
+    "bindings": [{ "name": "ROOMS", "class_name": "Room" }]
+  },
+  // Gói Free của Cloudflare chỉ hỗ trợ Durable Object dạng SQLite
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
+  "vars": {
+    // Ví dụ: "https://tenban.github.io" — để trống để cho phép mọi nơi
+    "ALLOWED_ORIGINS": ""
+  }
+}
