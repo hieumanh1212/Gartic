@@ -10,7 +10,8 @@ Game vẽ và đoán chữ nhiều người chơi trên trình duyệt: một ng
 
 - Tạo phòng riêng, mời bạn bằng mã phòng hoặc link
 - Bút, tẩy, tô màu (bucket fill), 18 màu + bảng chọn màu tự do, 5 cỡ nét, hoàn tác (Ctrl+Z), xóa hết
-- 400 từ tiếng Việt dễ vẽ, chủ phòng có thể thêm từ riêng (ví dụ tên bạn bè, chuyện trong nhóm)
+- Hơn 500 từ tiếng Việt dễ vẽ, chia thành 13 chủ đề (Động vật, Đồ ăn, Phương tiện, Lễ hội & Việt Nam...). Chủ phòng chọn một hoặc nhiều chủ đề, hoặc để "Tất cả". Người đoán thấy chủ đề của từ đang vẽ
+- Chủ phòng có thể thêm từ riêng (ví dụ tên bạn bè, chuyện trong nhóm)
 - Đoán không cần dấu, không phân biệt hoa thường ("con meo" = "con mèo"). Đoán gần đúng thì được báo riêng
 - Điểm tính theo tốc độ đoán, người vẽ được điểm theo số người đoán đúng
 - Gợi ý tự mở dần chữ cái
@@ -123,7 +124,8 @@ Gói Free của Cloudflare Workers có hạn mức theo số request và thời 
 
 | Muốn đổi | Sửa ở đâu |
 |---|---|
-| Bộ từ mặc định | `server/src/words.ts` |
+| Bộ từ theo chủ đề | `server/src/words.ts` |
+| Thêm / đổi tên chủ đề | `shared/topics.ts` (thêm id mới) + `server/src/words.ts` (thêm danh sách từ) |
 | Thời gian chọn từ, thời gian chờ kết nối lại... | `LIMITS` trong `shared/protocol.ts` |
 | Cách tính điểm | hàm `guess()` và `endTurn()` trong `server/src/game.ts` |
 | Màu sắc giao diện | biến CSS trong `:root` của `client/src/styles.css` |

@@ -13,7 +13,13 @@ import {
   type Settings,
 } from '../../shared/protocol';
 import { checkGuess, hintCount, letterIndexes, makeHint } from '../../shared/text';
-import { WORDS } from './words';
+import { CUSTOM_TOPIC, TOPIC_IDS } from '../../shared/topics';
+import { WORDS_BY_TOPIC } from './words';
+
+interface WordPick {
+  word: string;
+  topic: string;
+}
 
 export interface Transport {
   /** Gửi tin cho 1 người chơi (bỏ qua nếu đang mất kết nối) */
@@ -68,7 +74,8 @@ export class Game {
   private turnIdx = -1;
   private drawerId: string | null = null;
   private word: string | null = null;
-  private choices: string[] = [];
+  private choices: WordPick[] = [];
+  private topic: string | null = null;
   private revealed = new Set<number>();
   private endsAt = 0;
   private turnStart = 0;
@@ -84,7 +91,8 @@ export class Game {
   constructor(
     code: string,
     private transport: Transport,
-    private wordBank: string[] = WORDS,
+    /** Từ theo chủ đề: { topicId: [từ...] } */
+    private wordBank: Record<string, string[]> = WORDS_BY_TOPIC,
     private rng: () => number = Math.random,
   ) {
     this.code = code;
@@ -133,7 +141,7 @@ export class Game {
     if (!this.hostId || !this.players.has(this.hostId)) this.hostId = id;
 
     this.transport.send(id, { t: 'welcome', you: id, room: this.viewFor(id), ops: this.ops });
-    if (id === this.drawerId && this.phase === 'choosing') this.transport.send(id, { t: 'choices', words: this.choices });
+    if (id === this.drawerId && this.phase === 'choosing') this.sendChoices(id);
     if (this.word && this.phase === 'drawing' && (id === this.drawerId || p.guessed)) {
       this.transport.send(id, { t: 'word', word: this.word });
     }
@@ -248,7 +256,12 @@ export class Game {
       onlyCustom: typeof s.onlyCustom === 'boolean' ? s.onlyCustom : cur.onlyCustom,
       customWords: cur.customWords,
       customCount: cur.customCount,
+      topics: Array.isArray(s.topics)
+        ? [...new Set(s.topics.filter((t): t is string => typeof t === 'string' && TOPIC_IDS.includes(t)))]
+        : cur.topics,
     };
+    // Chọn đủ mọi chủ đề = "Tất cả"
+    if (next.topics.length === TOPIC_IDS.length) next.topics = [];
     if (Array.isArray(s.customWords)) {
       const seen = new Set<string>();
       const words: string[] = [];
@@ -304,6 +317,7 @@ export class Game {
   private nextTurn() {
     this.clearTimers();
     this.word = null;
+    this.topic = null;
     this.reveal = null;
     this.gains = {};
     this.revealed.clear();
@@ -331,7 +345,7 @@ export class Game {
     this.choices = this.pickWords(this.settings.wordChoices);
     this.phase = 'choosing';
     this.endsAt = Date.now() + LIMITS.chooseTime;
-    this.transport.send(drawer, { t: 'choices', words: this.choices });
+    this.sendChoices(drawer);
     this.later(LIMITS.chooseTime, () => this.startDrawing(Math.floor(this.rng() * this.choices.length)));
     this.broadcastRoom();
   }
@@ -345,8 +359,10 @@ export class Game {
   private startDrawing(index: number) {
     if (this.phase !== 'choosing' || !this.drawerId) return;
     this.clearTimers();
-    const word = this.choices[index] ?? this.choices[0];
+    const pick = this.choices[index] ?? this.choices[0];
+    const word = pick.word;
     this.word = word;
+    this.topic = pick.topic;
     this.usedWords.add(word.toLowerCase());
     this.phase = 'drawing';
     this.turnStart = Date.now();
@@ -488,17 +504,35 @@ export class Game {
     this.reveal = null;
   }
 
-  private pickWords(n: number): string[] {
-    const custom = this.settings.customWords;
-    let pool = this.settings.onlyCustom && custom.length >= n ? custom : [...this.wordBank, ...custom];
-    const fresh = pool.filter((w) => !this.usedWords.has(w.toLowerCase()));
+  /** Kho từ theo cài đặt hiện tại: chủ đề đã chọn (rỗng = tất cả) + từ tùy chỉnh */
+  private wordPool(): WordPick[] {
+    const custom = this.settings.customWords.map((word) => ({ word, topic: CUSTOM_TOPIC.id }));
+    if (this.settings.onlyCustom && custom.length) return custom;
+    const selected = this.settings.topics.length ? this.settings.topics : Object.keys(this.wordBank);
+    const fromTopics = selected.flatMap((topic) => (this.wordBank[topic] ?? []).map((word) => ({ word, topic })));
+    return [...fromTopics, ...custom];
+  }
+
+  private pickWords(n: number): WordPick[] {
+    let pool = this.wordPool();
+    // Chủ đề quá ít từ → bổ sung từ mọi chủ đề
+    if (pool.length < n) {
+      const all = Object.entries(this.wordBank).flatMap(([topic, ws]) => ws.map((word) => ({ word, topic })));
+      pool = [...pool, ...all.filter((a) => !pool.some((p) => p.word === a.word))];
+    }
+    const fresh = pool.filter((p) => !this.usedWords.has(p.word.toLowerCase()));
     if (fresh.length >= n) pool = fresh;
     const copy = [...pool];
-    const out: string[] = [];
+    const out: WordPick[] = [];
     while (out.length < n && copy.length) {
-      out.push(copy.splice(Math.floor(this.rng() * copy.length), 1)[0]);
+      const pick = copy.splice(Math.floor(this.rng() * copy.length), 1)[0];
+      if (!out.some((o) => o.word.toLowerCase() === pick.word.toLowerCase())) out.push(pick);
     }
     return out;
+  }
+
+  private sendChoices(id: string) {
+    this.transport.send(id, { t: 'choices', words: this.choices.map((c) => c.word) });
   }
 
   // ───────────────────────── Vẽ ─────────────────────────
@@ -594,6 +628,7 @@ export class Game {
       round: this.round,
       drawerId: this.drawerId,
       hint: this.word && this.phase === 'drawing' ? makeHint(this.word, this.revealed) : '',
+      topic: this.phase === 'drawing' || this.phase === 'turnEnd' ? this.topic : null,
       endsAt: this.endsAt,
       now: Date.now(),
       reveal: this.reveal,

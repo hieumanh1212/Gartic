@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { RoomView, Settings } from '../../../shared/protocol';
+import { TOPICS } from '../../../shared/topics';
 import { inviteLink } from '../lib/config';
 
 interface Props {
@@ -18,6 +19,11 @@ export function Lobby({ room, you, onSettings, onStart }: Props) {
   const [copied, setCopied] = useState(false);
   const [words, setWords] = useState(s.customWords.join(', '));
   const connected = room.players.filter((p) => p.connected).length;
+  const selectedTopics = s.topics ?? [];
+  const toggleTopic = (id: string) =>
+    onSettings({
+      topics: selectedTopics.includes(id) ? selectedTopics.filter((t) => t !== id) : [...selectedTopics, id],
+    });
   const link = inviteLink(room.code);
 
   // Đồng bộ ô từ tùy chỉnh khi trở thành chủ phòng
@@ -79,6 +85,37 @@ export function Lobby({ room, you, onSettings, onStart }: Props) {
         <label>Thời gian vẽ {select('drawTime', [30, 45, 60, 80, 100, 120, 150, 180, 240], (v) => `${v} giây`)}</label>
         <label>Số từ để chọn {select('wordChoices', [1, 2, 3, 4, 5], (v) => `${v} từ`)}</label>
         <label>Tối đa {select('maxPlayers', [2, 4, 6, 8, 10, 12, 16], (v) => `${v} người`)}</label>
+        <div className="topics">
+          <div className="topics-label">
+            Chủ đề <small>{isHost ? '(chọn một hoặc nhiều)' : ''}</small>
+          </div>
+          <div className="topic-chips">
+            <button
+              type="button"
+              className={`chip ${selectedTopics.length === 0 ? 'active' : ''}`}
+              disabled={!isHost}
+              aria-pressed={selectedTopics.length === 0}
+              onClick={() => onSettings({ topics: [] })}
+            >
+              🎲 Tất cả
+            </button>
+            {TOPICS.map((t) => {
+              const on = selectedTopics.includes(t.id);
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={`chip ${on ? 'active' : ''}`}
+                  disabled={!isHost}
+                  aria-pressed={on}
+                  onClick={() => toggleTopic(t.id)}
+                >
+                  {t.emoji} {t.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
         <label className="check">
           <input type="checkbox" checked={s.hints} disabled={!isHost} onChange={(e) => onSettings({ hints: e.target.checked })} />
           Tự mở dần chữ cái gợi ý

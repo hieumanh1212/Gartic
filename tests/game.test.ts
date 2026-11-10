@@ -14,7 +14,7 @@ function setup() {
       },
       disconnect: (id) => disconnected.push(id),
     },
-    ['con mèo', 'con chó', 'quả táo', 'ô tô', 'máy bay'],
+    { animals: ['con mèo', 'con chó'], food: ['quả táo', 'bánh mì'], vehicles: ['ô tô', 'máy bay'] },
     () => 0, // luôn chọn phần tử đầu → kết quả xác định
   );
   const msgs = (id: string) => inbox.get(id) ?? [];
@@ -192,6 +192,42 @@ describe('Game', () => {
     expect(disconnected).toEqual(['b']);
     expect(room('a').players).toHaveLength(1);
     expect(game.join('b', 'Bình', '', false)).toBe(false);
+  });
+
+  it('chọn chủ đề: chỉ ra từ thuộc chủ đề đó, người đoán thấy tên chủ đề', () => {
+    const { game, room, last } = setup();
+    game.join('a', 'An', '', true);
+    game.join('b', 'Bình', '', false);
+    game.handle('a', { t: 'settings', settings: { topics: ['food', 'khong-ton-tai', 'food'], wordChoices: 2 } });
+    expect(room('b').settings.topics).toEqual(['food']); // lọc chủ đề lạ + trùng
+    game.handle('a', { t: 'start' });
+    expect(last('a', 'choices')?.words).toEqual(['quả táo', 'bánh mì']);
+    expect(room('b').topic).toBeNull(); // chưa chọn từ thì chưa lộ chủ đề
+    game.handle('a', { t: 'choose', index: 1 });
+    expect(room('b').topic).toBe('food');
+  });
+
+  it('chủ đề quá ít từ → bổ sung từ chủ đề khác; chọn đủ mọi chủ đề = tất cả', () => {
+    const { game, room, last } = setup();
+    game.join('a', 'An', '', true);
+    game.join('b', 'Bình', '', false);
+    game.handle('a', { t: 'settings', settings: { topics: ['animals'], wordChoices: 3 } });
+    game.handle('a', { t: 'start' });
+    expect(last('a', 'choices')?.words).toHaveLength(3);
+    expect(last('a', 'choices')?.words.slice(0, 2)).toEqual(['con mèo', 'con chó']);
+    game.handle('b', { t: 'settings', settings: { topics: [] } }); // không phải chủ phòng → bỏ qua
+    expect(room('a').settings.topics).toEqual(['animals']);
+  });
+
+  it('từ tùy chỉnh có chủ đề custom; chỉ dùng từ tùy chỉnh bỏ qua chủ đề', () => {
+    const { game, room, last } = setup();
+    game.join('a', 'An', '', true);
+    game.join('b', 'Bình', '', false);
+    game.handle('a', { t: 'settings', settings: { topics: ['animals'], customWords: ['thầy Hùng'], onlyCustom: true, wordChoices: 1 } });
+    game.handle('a', { t: 'start' });
+    expect(last('a', 'choices')?.words).toEqual(['thầy Hùng']);
+    game.handle('a', { t: 'choose', index: 0 });
+    expect(room('b').topic).toBe('custom');
   });
 
   it('mọi người rời đi → phòng bị xóa', () => {

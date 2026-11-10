@@ -140,7 +140,19 @@ input:focus, select:focus, textarea:focus { border-color: var(--primary); box-sh
 }
 .logo { border: none; background: none; font-size: 1.15rem; font-weight: 800; padding: 0; white-space: nowrap; }
 .round { color: var(--muted); font-weight: 600; white-space: nowrap; }
-.headline { text-align: center; font-size: 1.1rem; min-width: 0; }
+.headline { text-align: center; font-size: 1.1rem; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.35rem 0.75rem; }
+.topic-badge { font-size: 0.8rem; font-weight: 700; color: var(--primary); background: var(--primary-soft); padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+
+/* Chủ đề trong phòng chờ */
+.topics { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 0.4rem; }
+.topics-label { font-weight: 600; font-size: 0.9rem; }
+.topics-label small { color: var(--muted); font-weight: 400; }
+.topic-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 0.35rem 0.75rem; font-size: 0.88rem; font-weight: 500; transition: border-color 0.15s; }
+.chip:hover:not(:disabled) { border-color: var(--primary); }
+.chip.active { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
+.chip:disabled { opacity: 1; cursor: default; }
+.chip:disabled:not(.active) { color: var(--muted); }
 .headline .word b { color: var(--primary); font-size: 1.3rem; }
 .timer { font-weight: 800; font-size: 1.3rem; min-width: 3.5ch; text-align: right; font-variant-numeric: tabular-nums; }
 
@@ -355,6 +367,9 @@ body { overscroll-behavior: none; }
   .logo span { display: none; }
   .round { font-size: 0.75rem; background: var(--primary-soft); color: var(--primary); padding: 2px 6px; border-radius: 999px; }
   .headline { font-size: 0.9rem; }
+  .headline { gap: 0.15rem 0.5rem; }
+  .topic-badge { font-size: 0.68rem; padding: 1px 7px; }
+  .chip { font-size: 0.82rem; padding: 0.3rem 0.6rem; }
   .headline .word b { font-size: 1.05rem; }
   .hint { gap: 0.45rem; }
   .hint-word { gap: 2px; }
@@ -488,3 +503,4 @@ body { overscroll-behavior: none; }
   .game:has(.lobby) { height: auto; min-height: 100dvh; grid-template-rows: auto auto auto 260px; }
   .game:has(.lobby) .stage { overflow: visible; }
 }
+.round:empty { background: none; padding: 0; }

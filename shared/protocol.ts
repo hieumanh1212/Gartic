@@ -15,6 +15,7 @@ export interface Settings {
   customWords: string[]; // từ do chủ phòng thêm (chỉ gửi cho chủ phòng)
   customCount: number; // số từ tùy chỉnh (gửi cho mọi người)
   onlyCustom: boolean; // chỉ dùng từ tùy chỉnh
+  topics: string[]; // chủ đề được chọn — rỗng = tất cả
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -26,6 +27,7 @@ export const DEFAULT_SETTINGS: Settings = {
   customWords: [],
   customCount: 0,
   onlyCustom: false,
+  topics: [],
 };
 
 export const LIMITS = {
@@ -61,6 +63,8 @@ export interface RoomView {
   drawerId: string | null;
   /** Gợi ý: '_' là chữ ẩn, ' ' là khoảng trắng, còn lại là chữ đã lộ */
   hint: string;
+  /** Chủ đề của từ đang vẽ (id trong shared/topics.ts, hoặc 'custom') */
+  topic: string | null;
   /** Thời điểm (theo đồng hồ server) kết thúc pha hiện tại, 0 nếu không có */
   endsAt: number;
   /** Giờ server lúc gửi, để client bù lệch đồng hồ */

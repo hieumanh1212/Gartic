@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { topicInfo } from '../../../shared/topics';
 import type { Profile } from '../lib/identity';
 import { isMuted, setMuted } from '../lib/sfx';
 import { useGame } from '../lib/useGame';
@@ -66,6 +67,16 @@ export function GameScreen({ code, create, profile, onLeave }: Props) {
     );
   } else if (room.phase === 'turnEnd') headline = <span>Đáp án: <b>{room.reveal?.word || '—'}</b></span>;
   else if (room.phase === 'gameOver') headline = <span>Kết thúc!</span>;
+
+  const topic = topicInfo(room.topic);
+  if (topic && (room.phase === 'drawing' || room.phase === 'turnEnd')) {
+    headline = (
+      <>
+        <span className="topic-badge" title="Chủ đề">{topic.emoji} {topic.name}</span>
+        {headline}
+      </>
+    );
+  }
 
   const saveImage = () => {
     const url = board.toDataURL();
