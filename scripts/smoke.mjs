@@ -97,8 +97,10 @@ try {
   await wait(() => b2.room?.players.find((p) => p.id === 'pb')?.connected, 'Bình vào lại');
   ok('Kết nối lại giữ nguyên điểm: ' + b2.room.players.find((p) => p.id === 'pb').score);
 
-  await wait(() => a.room.phase === 'choosing' && a.room.drawerId === 'pb', 'lượt kế tiếp', 9000);
-  ok('Tự chuyển sang lượt của Bình');
+  // Người vẽ kế tiếp = người thứ 2 theo thứ tự vào phòng (qua mạng thật, Bình/Chi có thể vào trước/sau nhau)
+  const next = a.room.players[1];
+  await wait(() => a.room.phase === 'choosing' && a.room.drawerId === next.id, 'lượt kế tiếp', 9000);
+  ok('Tự chuyển sang lượt của ' + next.name);
 
   for (const p of [a, b2, c, d]) p.ws.close();
   console.log('\n✅ Smoke test PASSED');
