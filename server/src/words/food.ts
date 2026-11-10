@@ -1,0 +1,23 @@
+// Chủ đề: Món ăn & đồ uống — 191 từ
+export default `
+phở, bún chả, bún bò, bún riêu, bún đậu mắm tôm, bún thịt nướng, cơm tấm, cơm rang, cơm gà, bát cơm,
+cơm niêu, cơm lam, cơm cháy, cơm nắm, xôi, cháo, lẩu, canh chua, thịt kho trứng, cá kho,
+rau muống xào, đậu phụ, giò lụa, chả cá, nem chua, nem rán, gỏi cuốn, bò bía, bánh xèo, bánh cuốn,
+bánh bèo, bánh khọt, bánh canh, hủ tiếu, mì quảng, bánh đúc, bánh giò, bánh tôm, bánh bột lọc, trứng vịt lộn,
+ngô nướng, khoai lang nướng, thịt nướng, xiên nướng, sườn nướng, cá nướng, mực nướng, chân gà, đùi gà, gà rán,
+bánh mì, bánh mì que, bánh mì chảo, bánh tráng, bánh tráng nướng, bánh tráng trộn, bánh đa, bánh phồng tôm, bánh bao, hoành thánh,
+bánh quẩy, bánh tiêu, bánh rán, bánh chuối, bánh da lợn, bánh bò, bánh trôi, bánh giầy, bánh gối, bánh đậu xanh,
+bánh pía, bánh cốm, chè, tào phớ, sữa chua, bánh flan, thạch rau câu, kem dừa, bò khô, bỏng gạo,
+kẹo lạc, kẹo dừa, kẹo kéo, kẹo mạch nha, ô mai, sushi, mì tôm, mì xào, mì cay, kim chi,
+cơm cuộn, cơm trộn, bánh gạo cay, há cảo, sủi cảo, xíu mại, cơm hộp, vịt quay, heo quay, lạp xưởng,
+cá viên, bò viên, bánh mochi, bánh cá, bánh bạch tuộc, kẹo hồ lô, bánh gạo, bánh pizza, bánh hamburger, xúc xích,
+khoai tây chiên, khoai tây nghiền, mì ý, bít tết, thịt xông khói, giăm bông, phô mai, salad, súp, bánh sandwich,
+bánh kếp, bánh waffle, bánh sừng bò, bánh su kem, bánh bông lan, bánh cupcake, bánh macaron, bánh tart trứng, bánh kem, bánh quy,
+bánh donut, bánh quế, bánh xốp, ngũ cốc, trứng ốp la, quả trứng, miếng thịt, đồ hộp, kem ốc quế, kem que,
+kẹo mút, kẹo bông, kẹo dẻo, kẹo cao su, sô cô la, bỏng ngô, bim bim, cà phê, trà sữa, nước cam,
+ly sữa, chai nước, hộp sữa, nước ngọt, nước chanh, nước dừa, nước mía, sinh tố, trà đá, trà đào,
+tách trà, sữa đậu nành, đá viên, muối, đường, hạt tiêu, nước mắm, xì dầu, tương ớt, tương cà,
+dầu ăn, mật ong, bột mì, hot dog, bánh mì nướng, gà nướng, tôm chiên, nem nướng, trà chanh, bánh pudding,
+bột chiên, sữa đặc, chân giò, giấm, mù tạt, cà ri, bò kho, xôi gấc, kem ly, ca cao,
+bún ốc,
+`;

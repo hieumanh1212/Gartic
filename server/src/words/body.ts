@@ -1,0 +1,23 @@
+// Chủ đề: Cơ thể & hành động — 196 từ
+export default `
+cái đầu, mái tóc, đầu hói, tóc đuôi ngựa, khuôn mặt, con mắt, lông mày, lông mi, cái mũi, cái miệng,
+đôi môi, cái lưỡi, cái răng, cái tai, cái cằm, má lúm đồng tiền, râu, ria mép, cái cổ, bờ vai,
+cánh tay, khuỷu tay, cơ bắp, bàn tay, ngón tay, móng tay, nắm đấm, dấu vân tay, cái bụng, cái rốn,
+cái lưng, đầu gối, bàn chân, ngón chân, gót chân, trái tim, bộ não, lá phổi, dạ dày, khúc xương,
+nốt ruồi, khuôn mặt cười, khuôn mặt buồn, tức giận, ngạc nhiên, sợ hãi, đỏ mặt, nháy mắt, lè lưỡi, bĩu môi,
+nhăn mặt, buồn ngủ, chóng mặt, hôn gió, đổ mồ hôi, nước mắt, khóc, cười, suy nghĩ, nằm mơ,
+ngáy, ngáp, hắt hơi, ho, sổ mũi, bị sốt, đau răng, đau bụng, đau đầu, nấc cụt,
+bị muỗi đốt, uống thuốc, tiêm phòng, nhổ răng, bó bột, chống nạng, thức dậy, vươn vai, đánh răng, rửa mặt,
+rửa tay, chải tóc, gội đầu, cạo râu, trang điểm, buộc dây giày, đi tắm, ăn cơm, uống nước, rót nước,
+nấu ăn, rán trứng, nướng thịt, rửa bát, quét nhà, lau sàn, giặt quần áo, phơi quần áo, gấp quần áo, đổ rác,
+đi chợ, mua sắm, xếp hàng, khâu vá, đan len, đóng đinh, sơn nhà, rửa xe, cắt cỏ, tưới cây,
+trồng cây, hái quả, cho gà ăn, dắt chó đi dạo, đi bộ, chạy, đạp xe, lái xe, leo cây, leo núi,
+câu cá, cắm trại, tắm nắng, tập thể dục, chống đẩy, đọc sách, viết thư, ký tên, gõ phím, xem ti vi,
+nghe nhạc, nhắn tin, gọi điện thoại, chụp ảnh, ca hát, nhảy múa, vẽ tranh, gấp giấy, thổi nến, thổi bóng bay,
+mở quà, tặng hoa, cầu hôn, bế em bé, cõng em, ôm, vẫy tay, vỗ tay, chỉ tay, giơ tay,
+bắt tay, đập tay, cúi chào, xoa đầu, khoanh tay, chống nạnh, gãi đầu, bịt mũi, bịt tai, ngửi hoa,
+nhìn trộm, thì thầm, la hét, cãi nhau, vấp ngã, nằm võng, ngủ gật, đi ngủ, mộng du, soi gương,
+thái rau, dọn giường, đeo khẩu trang, đếm tiền, kéo vali, leo cầu thang, đào hố, nhặt rác, tắm cho chó, bóp vai,
+nín thở, đói bụng, ngất xỉu, rét run, niềng răng, nhổ cỏ, cho cá ăn, ăn kem, cắt móng tay, nắm tay,
+lắc đầu, gật đầu, nhún vai, nhắm mắt, đập muỗi, xem phim,
+`;

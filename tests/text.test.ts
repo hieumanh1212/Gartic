@@ -29,6 +29,19 @@ describe('checkGuess', () => {
     expect(checkGuess('huou cao co', 'hươu cao cổ')).toBe('correct');
     expect(checkGuess('huou cao koo', 'hươu cao cổ')).toBe('close');
   });
+  it('đoán thiếu chữ chỉ loại vẫn đúng', () => {
+    expect(checkGuess('meo', 'con mèo')).toBe('correct');
+    expect(checkGuess('táo', 'quả táo')).toBe('correct');
+    expect(checkGuess('nhan', 'chiếc nhẫn')).toBe('correct');
+    expect(checkGuess('ca rot', 'củ cà rốt')).toBe('correct');
+    expect(checkGuess('con mèo', 'con mèo')).toBe('correct');
+  });
+  it('không cắt nhầm chữ không phải chữ chỉ loại', () => {
+    expect(checkGuess('vua', 'cờ vua')).toBe('wrong'); // "cờ" ≠ "cô"
+    expect(checkGuess('dâu', 'cô dâu')).toBe('wrong');
+    expect(checkGuess('tu lanh', 'tủ lạnh')).toBe('correct');
+    expect(checkGuess('lanh', 'tủ lạnh')).toBe('wrong');
+  });
   it('sai', () => {
     expect(checkGuess('con chó', 'con mèo')).toBe('wrong');
     expect(checkGuess('', 'con mèo')).toBe('wrong');

@@ -1,0 +1,20 @@
+// Chủ đề: Động vật — 169 từ
+export default `
+con mèo, con chó, con heo, con bò, con trâu, con ngựa, con dê, con cừu, con lừa, con thỏ,
+con chuột, chuột hamster, con chuột lang, con voi, con hổ, con sư tử, con báo, con báo săn, con khỉ, con gấu,
+con hươu, hươu cao cổ, ngựa vằn, con lạc đà, con kangaroo, con gấu trúc, gấu koala, con cáo, con sói, con nhím,
+con dơi, con hà mã, tê giác, con gấu bắc cực, con sóc, con sóc chuột, con lợn rừng, con bò tót, con tinh tinh, con khỉ đột,
+con đười ươi, con vượn, khỉ đầu chó, con vượn cáo, con lười, thú mỏ vịt, con tê tê, con chuột chũi, con chồn, con chồn hôi,
+con rái cá, con hải ly, con gấu mèo, con linh dương, con linh cẩu, con tuần lộc, nai sừng tấm, thú ăn kiến, con hải cẩu, con sư tử biển,
+con hải mã, cá heo, cá voi, cá voi sát thủ, kỳ lân biển, voi ma mút, hổ răng kiếm, con gà, con vịt, con ngỗng,
+gà tây, con chim, chim cánh cụt, con cú, con đại bàng, con vẹt, con công, con thiên nga, con hồng hạc, đà điểu,
+chim sẻ, con quạ, chim bồ câu, chim gõ kiến, chim ruồi, con cò, chim én, chim bói cá, chim hải âu, con bồ nông,
+con diều hâu, con kền kền, chim sáo, chim cút, chim yến, chim hoàng yến, chim chào mào, con cá, cá mập, cá mập búa,
+cá vàng, cá chép, cá trê, cá kiếm, cá ngựa, cá đuối, cá nóc, cá hề, cá chuồn, cá chọi,
+cá thần tiên, cá la hán, cá piranha, con lươn, con mực, con bạch tuộc, con cua, con tôm, tôm hùm, con ốc,
+ốc mượn hồn, con hàu, con sứa, sao biển, nhím biển, san hô, con ong, con bướm, con kiến, con nhện,
+con muỗi, con ruồi, con gián, con sâu, con ốc sên, con chuồn chuồn, con bọ cánh cứng, con đom đóm, con châu chấu, con dế mèn,
+con ve sầu, con bọ rùa, con bọ ngựa, con bọ que, con giun, con bọ cạp, con rết, con cuốn chiếu, con rắn, rắn hổ mang,
+con trăn, con ếch, con cóc, nòng nọc, con rùa, con cá sấu, con thằn lằn, tắc kè hoa, con khủng long, khủng long bạo chúa,
+khủng long ba sừng, khủng long cổ dài, thằn lằn bay, tổ chim, tổ ong, tổ kiến, mạng nhện, lông vũ, xương cá,
+`;

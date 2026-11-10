@@ -30,16 +30,36 @@ export function levenshtein(a: string, b: string): number {
 
 export type GuessResult = 'correct' | 'close' | 'wrong';
 
+/** Chữ chỉ loại đứng đầu từ — đoán thiếu cũng được tính đúng ("mèo" = "con mèo").
+ *  So khớp trên chữ CÒN DẤU để không nhầm ("cờ vua" không phải "cô" + "vua"). */
+const CLASSIFIERS = new Set([
+  'con', 'cái', 'chiếc', 'quả', 'trái', 'củ', 'cây', 'bông', 'đôi', 'tờ',
+  'quyển', 'cuốn', 'ngọn', 'ngôi', 'viên', 'hòn', 'tấm', 'bức', 'que',
+]);
+
+/** "con mèo" → "mèo"; trả về null nếu từ không bắt đầu bằng chữ chỉ loại */
+export function stripClassifier(word: string): string | null {
+  const w = word.normalize('NFC').toLowerCase().trim().replace(/\s+/g, ' ');
+  const i = w.indexOf(' ');
+  if (i <= 0 || !CLASSIFIERS.has(w.slice(0, i))) return null;
+  const rest = w.slice(i + 1);
+  return normalize(rest).replace(/ /g, '').length >= 2 ? rest : null;
+}
+
 export function checkGuess(guess: string, word: string): GuessResult {
   const g = normalize(guess);
-  const w = normalize(word);
   if (!g) return 'wrong';
-  if (g === w) return 'correct';
-  // Bỏ khoảng trắng: "conmeo" vẫn tính là đúng
-  if (g.replace(/ /g, '') === w.replace(/ /g, '')) return 'correct';
+  const short = stripClassifier(word);
+  const targets = [normalize(word), ...(short ? [normalize(short)] : [])];
+  const compact = g.replace(/ /g, '');
+  // Khớp chính xác, hoặc bỏ khoảng trắng: "conmeo" vẫn tính là đúng
+  if (targets.some((w) => g === w || compact === w.replace(/ /g, ''))) return 'correct';
+  const w = targets[0];
   if (g.includes(w)) return 'close';
-  const maxDist = w.length >= 8 ? 2 : 1;
-  if (w.length >= 3 && levenshtein(g, w) <= maxDist) return 'close';
+  for (const t of targets) {
+    const maxDist = t.length >= 8 ? 2 : 1;
+    if (t.length >= 3 && levenshtein(g, t) <= maxDist) return 'close';
+  }
   return 'wrong';
 }
 
